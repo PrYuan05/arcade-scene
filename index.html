@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>探索場景</title>
+  <style>
+    body {
+      transition: all 0.5s;
+      color: white;
+      text-align: center;
+      padding: 50px;
+      background-color: #222; /* 加個背景色，確保白字可見 */
+    }
+    #scene-title {
+      font-size: 2em;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="welcome">載入中...</h1>
+
+  <form id="visitor-form">
+    <input type="text" name="class" placeholder="班級" required />
+    <input type="text" name="number" placeholder="座號" required />
+    <input type="text" name="name" placeholder="姓名" required />
+    <input type="hidden" name="scene" id="sceneInput" />
+    <button type="submit">進入場景</button>
+  </form>
+
+  <div id="scene-content" style="display:none;">
+    <h1 id="scene-title"></h1>
+    <p id="scene-description"></p>
+  </div>
+
+  <script>
+    const welcomes = [
+      "挑戰者！你終於來了！請告訴我們你的名號吧！",
+      "此地只為真正的戰士開放——你的名字，說出來讓世界記住！",
+      "勝者為王，敗者退場！請問偉大的你，尊名為何？",
+      "歡迎來到傳說的競技場！勇者啊，貴大名是？",
+      "光榮之門為你敞開，勇者！報上你的大名！",
+      "傳說中的旅人啊，你的足跡踏入古老的聖域，請問貴名？",
+      "命運的鐘聲已響，勇者現身於此。請問尊駕尊姓大名？",
+      "星辰指引你來到這片大地……冒險者，貴名為何？",
+      "啊！英勇的靈魂再現人間……告訴我，你的名字是？",
+      "你身懷光明，氣息非凡……願聞尊姓大名，好載入編年史。"
+    ];
+
+    // ✅ 封裝隨機歡迎語
+    function getRandomWelcome() {
+      const index = Math.floor(Math.random() * welcomes.length);
+      return welcomes[index];
+    }
+
+    // ✅ 確保 DOM 載入完才執行
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("welcome").textContent = getRandomWelcome();
+    });
+
+    // ✅ 場景資料
+    const sceneMap = {
+      scene1: {
+        title: "森林冒險",
+        description: "你來到了神秘的森林。",
+      },
+      scene2: {
+        title: "沙漠奇遇",
+        description: "你置身於炙熱的沙漠之中。",
+      }
+    };
+
+    // ✅ 根據網址 scene=xxx 來選擇場景
+    const urlParams = new URLSearchParams(window.location.search);
+    const sceneKey = urlParams.get('scene') || 'scene1';
+    document.getElementById('sceneInput').value = sceneKey;
+
+    const scene = sceneMap[sceneKey];
+    if (scene) {
+      document.getElementById('scene-title').innerText = scene.title;
+      document.getElementById('scene-description').innerText = scene.description;
+    }
+
+    // ✅ 表單送出事件
+    document.getElementById('visitor-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const userName = formData.get("name") || "勇者";
+
+      // 寫入 Google Sheet（不影響顯示）
+      fetch("https://script.google.com/macros/s/AKfycbyIMht8kzG6UUBsfqWSb1NwMnaFTf4R6nmtORNC016gkygiDw9Mt8Us1gEbQKkU7Rj6/exec", {
+        method: "POST",
+        body: formData,
+      }).then(() => {
+        document.getElementById('visitor-form').style.display = 'none';
+        document.getElementById('scene-content').style.display = 'block';
+
+        // ✅ 顯示帶使用者名稱的歡迎語
+        const personalized = `歡迎你，${userName}！${getRandomWelcome()}`;
+        document.getElementById("scene-title").textContent = personalized;
+      });
+    });
+  </script>
+</body>
+</html>
