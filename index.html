@@ -29,6 +29,26 @@
     <button type="submit">進入場景</button>
   </form>
 
+  <style>
+    h1 {
+      font-size: medium;
+    }
+    button {
+      display: block;      /* 讓按鈕換行 */
+      margin-top: 20px;    /* 加些間距，避免和其他元素太擠 */
+      padding: 10px 20px;  /* 調整內邊距讓按鈕更舒服 */
+      background-color: #4CAF50;  /* 自定義按鈕背景顏色 */
+      color: white;        /* 文字顏色 */
+      border: none;        /* 去掉邊框 */
+      border-radius: 5px;  /* 邊框圓角 */
+      cursor: pointer;     /* 當滑鼠移到上面時顯示點擊手勢 */
+      transition: background-color 0.3s; /* 背景色過渡效果 */
+  }
+  button:hover {
+    background-color: #45a049;  /* 滑鼠懸停時變更背景顏色 */
+  }
+  </style>
+
   <div id="scene-content" style="display:none;">
     <h1 id="scene-title"></h1>
     <p id="scene-description"></p>
